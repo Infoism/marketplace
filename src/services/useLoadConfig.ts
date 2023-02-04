@@ -47,13 +47,15 @@ function packageConfigValidator(packages: Packages, name: string) {
 
 function buildProcess(pkg: packageInterface[]) {
   const outputPath = path.resolve('out');
-  if(!isExist(outputPath)){
-    fs.mkdir(outputPath, () => {})
+  if (!isExist(outputPath)) {
+    fs.mkdir(outputPath, () => {});
   }
-  fs.writeFileSync(
-    path.resolve(outputPath, 'marketplace.json'),
-    JSON.stringify(pkg, null, 2)
-  );
+  const outFilePath = path.resolve(outputPath, 'marketplace.json');
+  if (!isExist(outFilePath)) {
+    fs.appendFileSync(outFilePath, JSON.stringify(pkg, null, 2));
+  } else {
+    fs.writeFileSync(outFilePath, JSON.stringify(pkg, null, 2));
+  }
   return IS_DEV ? undefined : process.exit(0);
 }
 

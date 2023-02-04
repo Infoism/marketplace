@@ -75,10 +75,12 @@ function buildProcess(pkg) {
     import_fs2.default.mkdir(outputPath, () => {
     });
   }
-  import_fs2.default.writeFileSync(
-    import_path.default.resolve(outputPath, "marketplace.json"),
-    JSON.stringify(pkg, null, 2)
-  );
+  const outFilePath = import_path.default.resolve(outputPath, "marketplace.json");
+  if (!isExist(outFilePath)) {
+    import_fs2.default.appendFileSync(outFilePath, JSON.stringify(pkg, null, 2));
+  } else {
+    import_fs2.default.writeFileSync(outFilePath, JSON.stringify(pkg, null, 2));
+  }
   return IS_DEV ? void 0 : process.exit(0);
 }
 function useLoadConfig() {
