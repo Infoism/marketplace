@@ -1,0 +1,37 @@
+name: npm publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v3
+      
+      - uses: actions/setup-node@v3.3.0
+        with:
+          node-version: '18.x'
+          check-latest: true
+          registry-url: 'https://registry.npmjs.org'
+          
+      - name: install
+        run: |
+          npm install -g pnpm
+          pnpm i
+      - name: build
+        run: |
+          pnpm start
+      - name: release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: out/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
