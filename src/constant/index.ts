@@ -12,3 +12,5 @@ export const STATUS_COLOR: Record<status, string> = {
   success: 'green',
   error: 'red'
 }
+
+export const IS_DEV = process.env['NODE_ENV'] === 'development'

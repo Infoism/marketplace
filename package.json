@@ -5,8 +5,9 @@
   "type": "module",
   "main": "build.ts",
   "scripts": {
-    "dev": "temir src/main.ts",
+    "dev": "set NODE_ENV=development&& temir src/main.ts",
     "build": "temir build src/main.ts",
+    "start": "node dist/main.cjs",
     "start:build": "pnpm run build && node dist/main.cjs build"
   },
   "keywords": [],

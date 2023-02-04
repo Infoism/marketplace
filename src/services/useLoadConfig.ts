@@ -1,8 +1,8 @@
 import { isDir, isExist } from '../utils';
-import path, { resolve } from 'path';
+import path from 'path';
 import fs from 'fs';
-import { computed, effect, nextTick, reactive } from 'vue';
-import { packageTypes, status } from '../constant';
+import { computed, reactive } from 'vue';
+import { IS_DEV, packageTypes, status } from '../constant';
 
 type packageConfig = {
   // 插件类型
@@ -47,11 +47,14 @@ function packageConfigValidator(packages: Packages, name: string) {
 
 function buildProcess(pkg: packageInterface[]) {
   const outputPath = path.resolve('out');
+  if(!isExist(outputPath)){
+    fs.mkdir(outputPath, () => {})
+  }
   fs.writeFileSync(
     path.resolve(outputPath, 'marketplace.json'),
     JSON.stringify(pkg, null, 2)
   );
-  return;
+  return IS_DEV ? undefined : process.exit(0);
 }
 
 export function useLoadConfig() {
@@ -72,26 +75,25 @@ export function useLoadConfig() {
   const validators: Promise<packageInterface>[] = [];
 
   // 依次读取config.json 并进行有效性验证
-  const importPromises = packagesNames.map((packageName) => {
+  packagesNames.forEach((packageName) => {
     const configPath = path.resolve(packagesPath, packageName, 'config.json');
-    return import(configPath)
-      .then((res) => {
-        packages[packageName] = {
-          name: packageName,
-          config: res.default,
-          status: 'loading',
-          message: '',
-        };
-        validators.push(packageConfigValidator(packages, packageName));
-      })
-      .catch(() => {
-        packages[packageName] = {
-          name: packageName,
-          config: undefined,
-          status: 'error',
-          message: 'import "config.json" failed',
-        };
-      });
+    const configFile = fs.readFileSync(configPath, { encoding: 'utf-8' });
+    try {
+      packages[packageName] = {
+        name: packageName,
+        config: JSON.parse(configFile),
+        status: 'loading',
+        message: '',
+      };
+      validators.push(packageConfigValidator(packages, packageName));
+    } catch (e) {
+      packages[packageName] = {
+        name: packageName,
+        config: undefined,
+        status: 'error',
+        message: 'import "config.json" failed',
+      };
+    }
   });
 
   const packagesArr = computed(() => {
@@ -103,10 +105,8 @@ export function useLoadConfig() {
       (pkg) => pkg.config && pkg.status === 'success'
     );
   });
-  Promise.allSettled(importPromises).then(() => {
-    Promise.allSettled(validators).then(() => {
-      buildProcess(packagesValid.value);
-    });
+  Promise.allSettled(validators).then(() => {
+    buildProcess(packagesValid.value);
   });
 
   return { packages, packagesArr, packagesValid };

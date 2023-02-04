@@ -1,1 +1,5 @@
-{}
+{
+  "type": "app",
+  "repo": "Infoism/infoism-plugin-demo",
+  "dev": true
+}
