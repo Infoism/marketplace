@@ -2,17 +2,23 @@ import { isDir, isExist } from '../utils';
 import path, { resolve } from 'path';
 import fs from 'fs';
 import { computed, effect, nextTick, reactive } from 'vue';
-import { status } from '../constant';
+import { packageTypes, status } from '../constant';
 
 type packageConfig = {
+  // 插件类型
+  type: packageTypes;
+  // 仓库
+  repo: string;
+  // dev插件标识
+  dev?: boolean;
+};
+type packageInterface = {
   name: string;
-  config: {
-    type?: string;
-  };
+  config?: packageConfig;
   status: status;
   message?: string;
 };
-type Packages = Record<string, packageConfig>;
+type Packages = Record<string, packageInterface>;
 type validatorRes = {
   status?: status;
   message?: string;
@@ -39,9 +45,12 @@ function packageConfigValidator(packages: Packages, name: string) {
   return validatorPromise;
 }
 
-function buildProcess(pkg: packageConfig[]) {
+function buildProcess(pkg: packageInterface[]) {
   const outputPath = path.resolve('out');
-  fs.writeFileSync(path.resolve(outputPath, 'marketplace.json'), JSON.stringify(pkg, null, 2))
+  fs.writeFileSync(
+    path.resolve(outputPath, 'marketplace.json'),
+    JSON.stringify(pkg, null, 2)
+  );
   return;
 }
 
@@ -60,7 +69,7 @@ export function useLoadConfig() {
   });
 
   const packages = reactive<Packages>({});
-  const validators: Promise<packageConfig>[] = [];
+  const validators: Promise<packageInterface>[] = [];
 
   // 依次读取config.json 并进行有效性验证
   const importPromises = packagesNames.map((packageName) => {
@@ -78,7 +87,7 @@ export function useLoadConfig() {
       .catch(() => {
         packages[packageName] = {
           name: packageName,
-          config: {},
+          config: undefined,
           status: 'error',
           message: 'import "config.json" failed',
         };
