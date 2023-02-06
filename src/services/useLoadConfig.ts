@@ -51,11 +51,7 @@ function buildProcess(pkg: packageInterface[]) {
     fs.mkdir(outputPath, () => {});
   }
   const outFilePath = path.resolve(outputPath, 'marketplace.json');
-  if (!isExist(outFilePath)) {
-    fs.appendFileSync(outFilePath, JSON.stringify(pkg, null, 2));
-  } else {
-    fs.writeFileSync(outFilePath, JSON.stringify(pkg, null, 2));
-  }
+  fs.writeFileSync(outFilePath, JSON.stringify(pkg, null, 2));
   return IS_DEV ? undefined : process.exit(0);
 }
 
