@@ -11,8 +11,8 @@ type packageConfig = {
   description: string;
   // 仓库
   repo: string;
-  // logo
-  logo: string;
+  // banner
+  banner: string;
   // 插件类型
   type: packageTypes;
   // 仅在插件类型为微应用时加载icon

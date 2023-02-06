@@ -2,7 +2,7 @@
   "title": "插件开发demo",
   "description": "展示了Infoism提供的Bridge / Event等开发接口",
   "repo": "Infoism/infoism-plugin-demo",
-  "logo": "logo.png",
+  "banner": "banner.png",
   "type": "app",
   "icon": "icon.svg",
   "author": "pidanmeng",
