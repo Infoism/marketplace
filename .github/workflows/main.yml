@@ -28,10 +28,10 @@ jobs:
       - name: build
         run: |
           pnpm start
-      - name: release
-        uses: softprops/action-gh-release@v1
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          draft: true
-          files: out/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Build output to publish to the `gh-pages` branch:
+          publish_dir: ./out
+          publish_branch: static
