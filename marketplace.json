@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Demo",
+    "config": {
+      "type": "app",
+      "repo": "Infoism/infoism-plugin-demo",
+      "dev": true
+    },
+    "status": "success",
+    "message": ""
+  }
+]
