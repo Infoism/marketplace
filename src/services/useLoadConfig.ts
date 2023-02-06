@@ -5,10 +5,22 @@ import { computed, reactive } from 'vue';
 import { IS_DEV, packageTypes, status } from '../constant';
 
 type packageConfig = {
-  // 插件类型
-  type: packageTypes;
+  // 标题
+  title: string;
+  // 描述
+  description: string;
   // 仓库
   repo: string;
+  // logo
+  logo: string;
+  // 插件类型
+  type: packageTypes;
+  // 仅在插件类型为微应用时加载icon
+  icon?: string;
+  // 插件作者
+  author?: string;
+  // 捐助地址
+  sponsor?: string[];
   // dev插件标识
   dev?: boolean;
 };
