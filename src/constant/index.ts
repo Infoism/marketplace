@@ -1,16 +1,17 @@
-export type packageTypes = 'app' | 'theme' | 'extension' | 'default';
-export const PACKAGE_EMOJI: Record<packageTypes, string> = {
+export const packageTypes = ['app', 'theme', 'extension', 'default'] as const;
+export type packageTypesUnion = (typeof packageTypes)[number];
+export const PACKAGE_EMOJI: Record<packageTypesUnion, string> = {
   app: '📦',
   theme: '👕',
   extension: '⚒️',
-  default: '📦'
+  default: '📦',
 };
 
-export type status = 'loading' | 'success' | 'error'
+export type status = 'loading' | 'success' | 'error';
 export const STATUS_COLOR: Record<status, string> = {
   loading: 'yellowBright',
   success: 'green',
-  error: 'red'
-}
+  error: 'red',
+};
 
-export const IS_DEV = process.env['NODE_ENV'] === 'development'
+export const IS_DEV = process.env['NODE_ENV'] === 'development';

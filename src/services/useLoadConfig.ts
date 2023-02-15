@@ -2,7 +2,7 @@ import { isDir, isExist } from '../utils';
 import path from 'path';
 import fs from 'fs';
 import { computed, reactive } from 'vue';
-import { IS_DEV, packageTypes, status } from '../constant';
+import { IS_DEV, packageTypesUnion, status } from '../constant';
 
 type packageConfig = {
   // 标题
@@ -11,19 +11,17 @@ type packageConfig = {
   description: string;
   // 仓库
   repo: string;
-  // banner
-  banner: string;
-  // 插件类型
-  type: packageTypes;
-  // 仅在插件类型为微应用时加载icon
-  icon?: string;
   // 插件作者
   author?: string;
   // 捐助地址
   sponsor?: string[];
   // dev插件标识
   dev?: boolean;
+} & {
+  // 插件类型标识
+  [key in packageTypesUnion]?: boolean;
 };
+
 type packageInterface = {
   name: string;
   config?: packageConfig;
@@ -44,6 +42,29 @@ function packageConfigValidator(packages: Packages, name: string) {
    * TODO 检查仓库release是否符合约定
    */
   const validatorPromise = new Promise<validatorRes>((resolve) => {
+    const packageDir = path.resolve(`./packages/${name}`)
+    const packageConfig = packages[name].config
+    // 检查是否存在目标目录
+    if (!isExist(packageDir)) {
+      resolve({
+        status: 'error',
+        message: 'no target dir'
+      })
+    }
+    // 检查是否存在banner.png
+    if (!isExist(path.resolve(packageDir, 'banner.png'))) {
+      resolve({
+        status: 'error',
+        message: 'need a banner image named "banner.png".'
+      })
+    }
+    // 检查是否存在icon.svg
+    if (packageConfig?.app && !isExist(path.resolve(packageDir, 'icon.svg'))) {
+      resolve({
+        status: 'error',
+        message: 'need an icon named "icon.svg" for an app.'
+      })
+    }
     resolve({
       status: 'success',
       message: '',

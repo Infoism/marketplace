@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { TBox, TText, TSpacer } from '@temir/core'
 import { useLoadConfig } from './services/useLoadConfig'
-import { PACKAGE_EMOJI, packageTypes, STATUS_COLOR } from './constant'
+import { PACKAGE_EMOJI, packageTypes, packageTypesUnion, STATUS_COLOR } from './constant'
 import { computed } from 'vue';
 const { packages } = useLoadConfig()
 const packagesArr = computed(() => {
@@ -17,11 +17,14 @@ const packagesArr = computed(() => {
       </TText>
     </TBox>
     <TBox>
-      <TBox flex-direction="column" min-width="10">
+      <TBox flex-direction="column" min-width="15">
         <TBox v-for="pkg in packagesArr">
-          <TText :color="STATUS_COLOR[pkg.status]">
-            {{ PACKAGE_EMOJI?.[(pkg.config?.type) as packageTypes || 'default']}}
-          </TText>
+          <TBox v-for="pType in packageTypes" :color="STATUS_COLOR[pkg.status]">
+            <TText v-if="pkg?.config?.[pType]">
+              {{ PACKAGE_EMOJI?.[(pType) as packageTypesUnion || 'default']}}
+            </TText>
+          </TBox>
+          <TSpacer />
           <TText :color="STATUS_COLOR[pkg.status]">
             {{ pkg.name }}
           </TText>
@@ -32,7 +35,7 @@ const packagesArr = computed(() => {
         </TBox>
       </TBox>
       <TBox width="1"></TBox>
-      <TBox flex-direction="column" min-width="10">
+      <TBox flex-direction="column" min-width="15">
         <TBox v-for="pkg in packagesArr">
           <TText :color="STATUS_COLOR[pkg.status]">{{
             pkg.status === 'success' ? '✓' :
@@ -40,7 +43,7 @@ const packagesArr = computed(() => {
           }}</TText>
           <TBox width="4"></TBox>
           <TText :color="STATUS_COLOR[pkg.status]">
-            {{ pkg.message }}
+            {{ pkg.message || '.' }}
           </TText>
         </TBox>
       </TBox>
