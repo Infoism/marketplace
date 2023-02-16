@@ -51,11 +51,11 @@ function packageConfigValidator(packages: Packages, name: string) {
         message: 'no target dir'
       })
     }
-    // 检查是否存在banner.png
-    if (!isExist(path.resolve(packageDir, 'banner.png'))) {
+    // 检查是否存在logo.png
+    if (!isExist(path.resolve(packageDir, 'logo.png'))) {
       resolve({
         status: 'error',
-        message: 'need a banner image named "banner.png".'
+        message: 'need a banner image named "logo.png".'
       })
     }
     // 检查是否存在icon.svg
